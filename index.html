@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P@T | Školski Digitalni Časopis</title>
+    <!-- Google Fonts & FontAwesome for Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- Ekstrakt i Reset --- */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-dark: #111111;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --accent-blue: #0f2d59;
+            --border-color: #e5e5e5;
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* --- Navigacija --- */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: var(--bg-dark);
+        }
+        
+        .logo span {
+            color: var(--accent-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-weight: 600;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+            position: relative;
+            padding-bottom: 4px;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--bg-dark);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        /* --- Stranice --- */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease;
+            min-height: 80vh;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Hero Sekcija --- */
+        .hero {
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            padding: 6rem 2rem;
+            text-align: center;
+            border-bottom: 5px solid var(--accent-blue);
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            border-left: 5px solid var(--bg-dark);
+            padding-left: 1rem;
+        }
+
+        /* --- Istaknuti Članak --- */
+        .featured-card {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+
+        .featured-img {
+            height: 100%;
+            min-height: 400px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .featured-content {
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .category-badge {
+            background: var(--bg-dark);
+            color: #fff;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            align-self: flex-start;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Mreža Članaka --- */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .article-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+        }
+
+        .card-img-wrapper {
+            position: relative;
+            overflow: hidden;
+            padding-top: 60%;
+        }
+
+        .card-img-wrapper img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-body h3 {
+            font-size: 1.35rem;
+            margin-bottom: 0.75rem;
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .card-body p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Filteri --- */
+        .filter-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1.5rem;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--bg-dark);
+            color: white;
+            border-color: var(--bg-dark);
+        }
+
+        /* --- O nama --- */
+        .about-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Zasebna Stranica Članka --- */
+        .single-article-view {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: var(--bg-dark);
+            color: white;
+        }
+
+        .article-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin: 1.5rem 0;
+            letter-spacing: -1px;
+        }
+
+        .article-cover {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            margin-bottom: 3rem;
+        }
+
+        .article-content {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #222;
+        }
+
+        .article-content p {
+            margin-bottom: 2rem;
+        }
+
+        /* --- Footer & Newsletter --- */
+        .newsletter {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        footer {
+            background: var(--bg-dark);
+            color: white;
+            padding: 4rem 2rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .no-articles {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            font-style: italic;
+            grid-column: 1 / -1;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="nav-container">
+            <a href="#" class="logo" onclick="navigateTo('pocetna')">P<span>@</span>T</a>
+            <ul class="nav-links">
+                <li><a href="#" id="link-pocetna" class="active" onclick="navigateTo('pocetna')">Početna</a></li>
+                <li><a href="#" id="link-clanci" onclick="navigateTo('clanci')">Članci</a></li>
+                <li><a href="#" id="link-onama" onclick="navigateTo('onama')">O Nama</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- POČETNA -->
+    <main id="page-pocetna" class="page active">
+        <section class="hero">
+            <h1>P@T</h1>
+            <p>Glas učenika, priče iz hodnika i tehnologija budućnosti.</p>
+        </section>
+
+        <section class="container">
+            <h2 class="section-title">Istaknuta Priča</h2>
+            <div id="featured-article-container"></div>
+
+            <h2 class="section-title">Najnoviji Članci</h2>
+            <div class="articles-grid" id="latest-articles-grid"></div>
+        </section>
+    </main>
+
+    <!-- ČLANCI -->
+    <main id="page-clanci" class="page">
+        <section class="container">
+            <h2 class="section-title">Svi Članci</h2>
+            
+            <div class="filter-container">
+                <button class="filter-btn active" onclick="filterArticles('Sve')">Sve</button>
+                <button class="filter-btn" onclick="filterArticles('Maturanti')">Maturanti</button>
+                <button class="filter-btn" onclick="filterArticles('Iza klupa')">Iza klupa</button>
+                <button class="filter-btn" onclick="filterArticles('Školske aktivnosti')">Školske aktivnosti</button>
+                <button class="filter-btn" onclick="filterArticles('Aktualno')">Aktualno</button>
+                <button class="filter-btn" onclick="filterArticles('Naši uspjesi')">Naši uspjesi</button>
+            </div>
+
+            <div class="articles-grid" id="all-articles-grid"></div>
+        </section>
+    </main>
+
+    <!-- O NAMA -->
+    <main id="page-onama" class="page">
+        <section class="container">
+            <div class="about-layout">
+                <div class="about-text">
+                    <h2>O Časopisu P@T</h2>
+                    <p>P@T je nezavisni digitalni časopis koji vode isključivo učenici naše škole.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ZASEBNA STRANICA ČLANKA -->
+    <main id="page-artikl" class="page">
+        <div class="single-article-view">
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Natrag</button>
+            
+            <article>
+                <div class="article-header">
+                    <span class="category-badge" id="article-page-category">Kategorija</span>
+                    <h1 id="article-page-title">Naslov Članka</h1>
+                    <div style="font-size: 0.9rem; color: #666; margin-bottom: 1.5rem;">
+                        <span id="article-page-author">Autor</span> &nbsp;|&nbsp; 
+                        <span id="article-page-date">Datum</span>
+                    </div>
+                </div>
+                
+                <img id="article-page-img" src="" alt="Cover" class="article-cover">
+                
+                <div class="article-content" id="article-page-text"></div>
+            </article>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <p>© 2026 Školski digitalni časopis. Sva prava pridržana.</p>
+        </div>
+    </footer>
+
+    <script>
+        const articles = [
+            {
+                id: 1,
+                title: "Točno u podne - obračun iz matematike",
+                summary: "Uspjeh našeg učenika Josipa Križanca na Matematičkom natjecanju KLOKAN",
+                content: `<p>Matematičko natjecanje KLOKAN održano je 19. ožujka 2026. točno u podne.</p>
+                          <p>U Hrvatskoj je sudjelovalo 36113 učenika iz 650 osnovnih i 89 srednjih škola.</p>
+                          <p>Test se pisao 75 minuta u učionici A1 i imao je 100 bodova. Rezultati su stigli 29. travnja 2026.</p>
+                          <p>Iz naše škole natjecalo se dvadesetak učenika, a naš Josip Križanec ušao je u top 10 posto!</p>`,
+                category: "Naši uspjesi",
+                author: "Patrik Žejinski",
+                date: "29. travnja 2026.",
+                img: "josip.jpg", 
+                featured: true
+            }
+        ];
+
+        let previousPage = 'pocetna';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderHomepage();
+            renderArticlesPage(articles);
+        });
+
+        function navigateTo(pageId) {
+            const currentPage = document.querySelector('.page.active');
+            if (currentPage && currentPage.id !== 'page-artikl') {
+                previousPage = currentPage.id.replace('page-', '');
+            }
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(link => link.classList.remove('active'));
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) targetPage.classList.add('active');
+            const activeLink = document.getElementById(`link-${pageId}`);
+            if (activeLink) activeLink.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderHomepage() {
+            const featuredContainer = document.getElementById('featured-article-container');
+            const latestGrid = document.getElementById('latest-articles-grid');
+            
+            if (articles.length === 0) {
+                featuredContainer.innerHTML = '<p class="no-articles">Nema članaka.</p>';
+                latestGrid.innerHTML = '<p class="no-articles">Nema članaka.</p>';
+                return;
+            }
+
+            const featured = articles[0];
+            featuredContainer.innerHTML = `
+                <div class="featured-card" onclick="openArticle(${featured.id})">
+                    <img src="${featured.img}" alt="Featured Image" class="featured-img">
+                    <div class="featured-content">
+                        <span class="category-badge">${featured.category}</span>
+                        <h3>${featured.title}</h3>
+                        <p style="font-size:0.9rem; color:#666; margin-bottom:1rem;">Autor: ${featured.author} | ${featured.date}</p>
+                        <p style="color: var(--text-muted);">${featured.summary}</p>
+                    </div>
+                </div>
+            `;
+            latestGrid.innerHTML = '<p class="no-articles">Nema drugih novih članaka.</p>';
+        }
+
+        function renderArticlesPage(data) {
+            const grid = document.getElementById('all-articles-grid');
+            grid.innerHTML = '';
+            if(data.length === 0) {
+                grid.innerHTML = '<p class="no-articles">Nema članaka u ovoj kategoriji.</p>';
+                return;
+            }
+            data.forEach(art => {
+                const card = document.createElement('div');
+                card.className = 'article-card';
+                card.onclick = () => openArticle(art.id);
+                card.innerHTML = `
+                    <div class="card-img-wrapper"><img src="${art.img}" alt="${art.title}"></div>
+                    <div class="card-body">
+                        <span class="category-badge" style="font-size:0.65rem; margin-bottom: 0.8rem;">${art.category}</span>
+                        <h3>${art.title}</h3>
+                        <p>${art.summary}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterArticles(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if(btn.textContent.trim() === category) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+            if (category === 'Sve') renderArticlesPage(articles);
+            else renderArticlesPage(articles.filter(a => a.category === category));
+        }
+
+        function openArticle(id) {
+            const art = articles.find(a => a.id === id);
+            if (!art) return;
+            document.getElementById('article-page-category').textContent = art.category;
+            document.getElementById('article-page-title').textContent = art.title;
+            document.getElementById('article-page-author').textContent = "Autor: " + art.author;
+            document.getElementById('article-page-date').textContent = art.date;
+            document.getElementById('article-page-img').src = art.img;
+            document.getElementById('article-page-text').innerHTML = art.content;
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById('page-artikl').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goBack() { navigateTo(previousPage); }
+    </script>
+</body>
+</html>
